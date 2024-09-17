@@ -36,4 +36,19 @@ class UserService extends BaseService {
       log('Some error occured', name: 'error createPostApi');
     }
   }
+
+
+   //pagination (limit or offset)
+  Future getPhotosApi(int limit, int offset) async {
+    final api = '${ApiUrls.photoList}?page=$offset&limit=$limit';
+    final response = await getHttp(api);
+
+    log(response.body, name: 'getPhotosApi');
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    }
+    return [];
+  }
+
 }

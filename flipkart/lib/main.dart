@@ -1,14 +1,31 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:my_first_app/providers/authantification_provider.dart';
-import 'package:my_first_app/providers/consumer_cart_provider.dart';
-import 'package:my_first_app/providers/user_provider.dart';
-import 'package:my_first_app/todo_application/todo_screen.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_first_app/Screens/initial_screen.dart';
+import 'package:my_first_app/blocProvider/todo_bloc.dart';
+import 'package:my_first_app/firebase_options.dart';
 
 final messangerkey = GlobalKey<ScaffoldMessengerState>();
 
-void main() {
+final navigatorKey = GlobalKey<NavigatorState>();
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // FireBase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Initialize hive
+  // await Hive.initFlutter();
+
+  //Register the adapter
+  // Hive.registerAdapter(TodoAdapter());
+
+  // Open the peopleBox
+  // await Hive.openBox(boxName);
+
   runApp(const MyApp());
 }
 
@@ -23,13 +40,17 @@ class MyApp extends StatelessWidget {
         // ChangeNotifierProvider(
         //   create: (context) => CountProvider(),
         //or
-        MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => CartProvider()),
-        ChangeNotifierProvider(create: (context) => AuthProvider()),
-        ChangeNotifierProvider(create: (context) => UserProvider()),
-      ],
+        //   MultiProvider(
+        // providers: [
+        //   ChangeNotifierProvider(create: (context) => CartProvider()),
+        //   ChangeNotifierProvider(create: (context) => AuthProvider()),
+        //   ChangeNotifierProvider(create: (context) => UserProvider()),
+        // ],
+        MultiBlocProvider(
+      providers: [BlocProvider(create: (context) => TodoBloc())],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
+
         scaffoldMessengerKey: messangerkey,
         debugShowCheckedModeBanner: false,
         title: "Clone",
@@ -76,7 +97,23 @@ class MyApp extends StatelessWidget {
         // home: const ClipperScreen(),
         // home: const AdvanceMaterialWidget(),
         // home: const LocalStorageScreen(),
-        home: const ToDoScreen(),
+        // home: const ToDoScreen(),
+        // home: const HiveToDoScreen(),
+        // home: const ImagePickerLocalStorageScreen(),
+        // home: const ApiPaginationUserScreen(),
+        // home: const SharedPreScreen(),
+        // home: const FirebaseLoginScreen(),
+        home: const InitialScreen(),
+        //Animation
+        // home: const AnimatedAlignExample(),
+        // home: const HeroWidgetAnimation(),
+        // home:  AnimationContainer(),
+        // home: const TrickerProviderAnimation(),
+        // home: const AnimatedCrossFadeScreen(),
+        // home: const AnimateddefaultText(),
+        // home: const LikeTweenAnimation(),
+        // home: const AnimationListScreen(),
+        // home: const StaggredAnimationScreen(),
       ),
     );
   }

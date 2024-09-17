@@ -72,7 +72,7 @@ class _RandomUserScreenState extends State<RandomUserScreen> {
                     // displacement: MediaQuery.of(context).size.height / 2,
                     // edgeOffset: 30,
                     color: Colors.cyan,
-                    onRefresh: () {
+                     onRefresh: () {
                       return getUser();
                       // return Future.delayed(const Duration(seconds: 2)).then(
                       //   (value) => getUser(),

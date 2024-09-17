@@ -2,7 +2,6 @@ import 'package:my_first_app/todo_application/todo_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-
 // Sqflite
 class DBHelper {
   static const _dbName = 'todo.db';
@@ -43,10 +42,14 @@ class DBHelper {
     );
   }
 
-  Future<List<TodoModel>> getTodos() async {
+  Future<List<TodoModel>> getTodos(int limit,int offset) async {
     final db = await database;
 
-    final List<Map<String, dynamic>> maps = await db.query(_tableName);
+    final List<Map<String, dynamic>> maps = await db.query(
+      _tableName,
+      limit: limit,
+      offset: offset,
+    );
 
     return List.generate(
       maps.length,

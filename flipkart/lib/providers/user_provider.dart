@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:my_first_app/api_services/firebase_api.dart';
 import 'package:my_first_app/api_services/user_service.dart';
+import 'package:my_first_app/models/api_usermodel_p.dart';
 import 'package:my_first_app/models/api_users.dart';
 import 'package:my_first_app/todo_application/db_helper.dart';
 import 'package:my_first_app/todo_application/todo_model.dart';
@@ -9,6 +11,9 @@ import 'package:my_first_app/todo_application/todo_model.dart';
 class UserProvider extends ChangeNotifier {
   final service = UserService();
   List<ApiUser> apiUserList = [];
+
+  //for pagination
+  List<ApiUserModelP> photos = [];
 
   Future<void> getApiUser() async {
     final response = await service.getUsersApi();
@@ -50,10 +55,42 @@ class UserProvider extends ChangeNotifier {
 
   List<TodoModel> todos = [];
 
-  Future<void> getTodos() async {
-    final response = await DBHelper.instance.getTodos();
+  Future<int> getTodos({int limit = 10, int offset = 0}) async {
+    final response = await DBHelper.instance.getTodos(limit, offset);
+
+    offset == 0 ? todos = response : todos += response;
 
     todos = response;
     notifyListeners();
+    return response.length;
+  }
+
+  //Firebasecloud  storage todo list
+  List<TodoModel> fireTodos = [];
+
+  Future<int> getFireTodos({int limit = 10, int offset = 0}) async {
+    final response = await FirebaseApi.instance.getTodos();
+    List<TodoModel> tempData = List.from(response
+        .map((e) => TodoModel.fromJson(e.data() as Map<String, dynamic>)));
+
+    fireTodos = tempData;
+
+    notifyListeners();
+    return response.length;
+  }
+
+  // for Pagination
+  Future<int> getPhotos({int limit = 10, int offset = 1}) async {
+    final response = await service.getPhotosApi(limit, offset);
+    // log(response.toString(), name: 'getPhotos');
+
+    List<ApiUserModelP> tempList = List<ApiUserModelP>.from(
+      response.map(
+        (e) => ApiUserModelP.fromjson(e),
+      ),
+    );
+    offset == 1 ? photos = tempList : photos += tempList;
+    notifyListeners();
+    return tempList.length;
   }
 }

@@ -1,10 +1,10 @@
 class TodoModel {
-  final int id;
+  dynamic id;
   final String title;
   final String body;
 
   TodoModel({
-    required this.id,
+    this.id = '',
     required this.title,
     required this.body,
   });
